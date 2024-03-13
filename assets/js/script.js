@@ -8,7 +8,8 @@ import Serpiente from './serpiente.js';
 import Aguila from './aguila.js';
 
 var tableAnimal = [];
-var srcAnimal = "";
+var imagenAnimal = "";
+var sonidoAnimal = "";
 
 //4. Realizar por lo menos una función autoejecutable IIFE.
 const readAnimalJson = (() => {
@@ -37,13 +38,14 @@ animalSelected.addEventListener('change', async () => {
 
     const { animales } = await readAnimalJson.animalAttribs();
     let tipoAnimal = animalSelected.value;
-
+    $('#preview').empty();
     animales.forEach(element => {
         if (element.name === tipoAnimal) {
             var img = document.createElement("img");
             img.setAttribute("src", `assets/imgs/${element.imagen}`);
             previewImg.appendChild(img);
-            srcAnimal = `assets/imgs/${element.imagen}`;
+            imagenAnimal = `assets/imgs/${element.imagen}`;
+            sonidoAnimal = `assets/sounds/${element.sonido}`;
         }
     });
 });
@@ -57,30 +59,30 @@ botonAgregar.addEventListener("click", (e) => {
     let nombre = document.getElementById('animal').value;
     let edad = document.getElementById('edad').value
     let comentarios = document.getElementById('comentarios').value;
-    let img = srcAnimal;
-    // let img = document.images[0].src;
+    let img = imagenAnimal;
+    let sonido = sonidoAnimal;
 
     //7. Validar que el usuario haya asignado todos los datos del animal antes de que éste sea agregado a la tabla. (Opcional)
     if (nombre != '' && edad != '' && comentarios != '' && img != '') {
         switch (nombre) {
             case "Leon":
-                let leon = new Leon(nombre, edad, img, comentarios);
+                let leon = new Leon(nombre, edad, img, comentarios, sonido);
                 tableAnimal.push(leon);
                 break;
             case "Lobo":
-                let lobo = new Lobo(nombre, edad, img, comentarios);
+                let lobo = new Lobo(nombre, edad, img, comentarios, sonido);
                 tableAnimal.push(lobo);
                 break;
             case "Oso":
-                let oso = new Oso(nombre, edad, img, comentarios);
+                let oso = new Oso(nombre, edad, img, comentarios, sonido);
                 tableAnimal.push(oso);
                 break;
             case "Serpiente":
-                let serpiente = new Serpiente(nombre, edad, img, comentarios);
+                let serpiente = new Serpiente(nombre, edad, img, comentarios, sonido);
                 tableAnimal.push(serpiente);
                 break;
             case "Aguila":
-                let aguila = new Aguila(nombre, edad, img, comentarios);
+                let aguila = new Aguila(nombre, edad, img, comentarios, sonido);
                 tableAnimal.push(aguila);
                 break;
             default:
@@ -88,10 +90,10 @@ botonAgregar.addEventListener("click", (e) => {
         }
 
         showRegisteredAnimals();
-        inicializaForm();
+        initializeForm();
 
     } else {
-        alert('Debe seleccionar todos los datos para agregar el animal')
+        alert('Debe seleccionar todos los datos para agregar el animal');
     };
 
 })
@@ -105,13 +107,17 @@ const showRegisteredAnimals = () => {
         console.log(element);
         let cardAnimal = `<div class="card ml-4">
             <img src=${element.img} class="card-img-top" alt="...">
+            <a href=${element.sonido} target="_blank" class="btn btn-secondary d-flex justify-content-center">
+            <i class="fa-solid fa-volume-high fa-2x"></i>
+            </a>
         </div>`;
 
         divAnimal.innerHTML += cardAnimal;
     });
 }
+
 // 8. Devolver el formulario en un estado inicial luego de registrar a cada animal. (Opcional)
-function inicializaForm(){
+function initializeForm(){
     document.getElementById('animal').value = '';
     document.getElementById('edad').value = '';
     document.getElementById('comentarios').value = '';
